@@ -1,7 +1,7 @@
 Thingiview.js
 =============
 
-A javascript (using Canvas and WebGL if available) 3D model viewer.  Uses the [Three.js](http://github.com/mrdoob/three.js) 3D Engine.  Check out the [Examples](http://replimat.com/thingiview/examples/).
+A javascript (using Canvas and WebGL if available) 3D model viewer.  Uses the [Three.js](http://github.com/mrdoob/three.js) 3D Engine.  Check out the [Examples](http://n0r.org/thingiview.js/examples/client_side_ajax.html).
 
 # Features
 
@@ -15,14 +15,13 @@ A javascript (using Canvas and WebGL if available) 3D model viewer.  Uses the [T
 # Example
 
 <pre><code>
-    &lt;script src="/javascripts/Three.js"&gt;&lt;/script&gt;
-    &lt;script src="/javascripts/plane.js"&gt;&lt;/script&gt;
+    &lt;script src="/javascripts/three..min.js"&gt;&lt;/script&gt;
     &lt;script src="/javascripts/thingiview.js"&gt;&lt;/script&gt;
 
     &lt;script>
       window.onload = function() {
         thingiurlbase = "/javascripts";
-        thingiview = new Thingiview("viewer");
+        thingiview = new Thingiview("viewer",100,10);
         thingiview.setObjectColor('#C0D8F0');
         thingiview.initScene();
         thingiview.loadSTL("/objects/cube.stl");
@@ -40,9 +39,11 @@ It's important that everything is done within window.onload.
 
 Must be set to the path where the javascript files are located so that related scripts can be loaded dynamically.
 
-## thingiview = new Thingiview("id of viewer's container div");
+## thingiview = new Thingiview("id of viewer's container div", gridsize, gridunit);
 
 Pass the id of the div to place the viewer into.  You can set the width and height on the css for that div.
+gridsize and gridunit can be use to control the size and subdivision of the plane,
+that can be shown using setShowPlane.
 
 ## thingiview.initScene();
 
@@ -54,7 +55,8 @@ Make sure you pass the full url path to the model file you want to load.  This w
   
 ## thingiview.setShowPlane(true);
 
-`true or false`.  Show or hide the 100x100 grid plane under the object.
+`true or false`.  Show or hide the grid plane under the object.
+The grind can be configure using the gridsize and gridunit paremeter of Thingiview.
   
 ## thingiview.setBackgroundColor('#ffffff');
 

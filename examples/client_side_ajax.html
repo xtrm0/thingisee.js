@@ -15,9 +15,8 @@
    }
   </style>
   
-  <script src="../javascripts/Three.js"></script>
-  <script src="../javascripts/plane.js"></script>
-  <script src="../javascripts/thingiview.js"></script>
+  <script src="../javascript/three.min.js"></script>
+  <script src="../javascript//thingiview.js"></script>
 
   <script>
     window.onload = function() {
@@ -28,7 +27,7 @@
       });
 
       thingiurlbase = "../javascripts";
-      thingiview = new Thingiview("viewer");
+      thingiview = new Thingiview("viewer",100,10);
       thingiview.setObjectColor('#C0D8F0');
       thingiview.initScene();
       // thingiview.setShowPlane(true);
