@@ -802,7 +802,7 @@ Thingiview.prototype.loadObjectGeometry = function() {
       if (this.object) {
         // shouldn't be needed, but this fixes a bug with webgl not removing previous object when loading a new one dynamically
         this.object.materials = [new THREE.MeshBasicMaterial({color:0xffffff, opacity:0})];
-        this.scene.removeObject(this.object);        
+        this.scene.remove(this.object);        
         // this.object.geometry = geometry;
         // this.object.materials = [material];
       }
