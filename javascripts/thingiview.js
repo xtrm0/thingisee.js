@@ -148,7 +148,7 @@ Thingiview.prototype.initScene = function() {
     // this.renderer.setSize(this.container.innerWidth, this.container.innerHeight);
 
   	this.renderer.setSize(this.width, this.height);
-    this.renderer.domElement.style.backgroundColor = backgroundColor;
+    this.renderer.domElement.style.backgroundColor = this.backgroundColor;
   	this.container.appendChild(this.renderer.domElement);
 
     // stats = new Stats();
@@ -430,18 +430,18 @@ Thingiview.prototype.getShowPlane = function(){
 
 Thingiview.prototype.setShowPlane = function(show) {
     this.showPlane = show;
-    
+
     if (show) {
+      log("Showing plane");
       if (this.scene && !this.plane) {
         this.loadPlaneGeometry();
       }
-      this.plane.material[0].opacity = 1;
-      // this.plane.updateMatrix();
+      this.scene.add(this.plane);
+      this.plane.updateMatrix();
     } else {
+      log("Hiding plane");
       if (this.scene && this.plane) {
-        // alert(this.plane.material[0].opacity);
-        this.plane.material[0].opacity = 0;
-        // this.plane.updateMatrix();
+        this.scene.remove(this.plane);
       }
     }
     
@@ -453,7 +453,7 @@ Thingiview.prototype.getRotation = function() {
   }
 
 Thingiview.prototype.setRotation = function(rotate) {
-    rotation = rotate;
+    log("Rotation set to " + rotate)
     
     clearInterval(this.rotateTimer);
 
@@ -679,6 +679,7 @@ Thingiview.prototype.loadArray = function(array) {
   }
 
 Thingiview.prototype.newWorker = function(cmd, param) {
+    var wasRotating = this.getRotation();
     this.setRotation(false);
   	
     var worker = new WorkerFacade(thingiurlbase + '/thingiloader.js');
@@ -693,8 +694,7 @@ Thingiview.prototype.newWorker = function(cmd, param) {
         this.scope.progressBar.innerHTML = '';
         this.scope.progressBar.style.display = 'none';
 
-        this.scope.setRotation(false);
-        this.scope.setRotation(true);
+        this.scope.setRotation(wasRotating);
         log("finished loading " + this.scope.geometry.faces.length + " faces.");
         this.scope.centerCamera();
       } else if (event.data.status == "complete_points") {
@@ -725,8 +725,7 @@ Thingiview.prototype.newWorker = function(cmd, param) {
         this.scope.progressBar.innerHTML = '';
         this.scope.progressBar.style.display = 'none';
 
-        this.scope.setRotation(false);
-        this.scope.setRotation(true);
+        this.scope.setRotation(wasRotating);
         log("finished loading " + event.data.content[0].length + " points.");
         // this.scope.centerCamera();
       } else if (event.data.status == "progress") {
@@ -763,7 +762,8 @@ Thingiview.prototype.displayAlert = function(msg) {
   }
 
 Thingiview.prototype.loadPlaneGeometry = function() {
-    var material = new THREE.LineBasicMaterial({color:0xafafaf, opacity: 1});
+
+    var material = new THREE.LineBasicMaterial({color:0xafafaf});
     this.plane = new THREE.Object3D();
     for (var i=-this.gridsize/2; i<= this.gridsize/2; i += this.gridunit) {
       var geometry = new THREE.Geometry();
@@ -777,7 +777,7 @@ Thingiview.prototype.loadPlaneGeometry = function() {
       line = new THREE.Line(geometry, material);
       this.plane.add(line);
     }
-    this.scene.add(this.plane);
+   
   }
 
 Thingiview.prototype.loadObjectGeometry = function() {
@@ -786,7 +786,7 @@ Thingiview.prototype.loadObjectGeometry = function() {
         // material = new THREE.MeshColorStrokeMaterial(this.objectColor, 1, 1);
         material = new THREE.MeshBasicMaterial({color:this.objectColor,wireframe:true});
       } else {
-        if (isWebGl) {
+        if (this.isWebGl) {
           // material = new THREE.MeshPhongMaterial(this.objectColor, this.objectColor, 0xffffff, 50, 1.0);
           // material = new THREE.MeshColorFillMaterial(this.objectColor);
           // material = new THREE.MeshLambertMaterial({color:this.objectColor});
