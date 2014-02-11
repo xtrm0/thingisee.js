@@ -657,7 +657,7 @@ Thingiview.prototype.centerCamera = function() {
       this.directionalLight.position.y = this.geometry.min_y * 2;
       this.directionalLight.position.z = this.geometry.max_z * 2;
 
-      this.pointLight.position.x = this.geometry.center_y;
+      this.pointLight.position.x = this.geometry.center_x;
       this.pointLight.position.y = this.geometry.center_y;
       this.pointLight.position.z = this.geometry.max_z * 2;
     } else {
