@@ -22,6 +22,7 @@ We updated threejs to the newest version and added better camera support.
 
 <pre><code>
     &lt;script src="/javascripts/three..min.js"&gt;&lt;/script&gt;
+    &lt;script src="/javascripts/OrbitControls.js"&gt;&lt;/script&gt;
     &lt;script src="/javascripts/thingiview.js"&gt;&lt;/script&gt;
 
     &lt;script>
