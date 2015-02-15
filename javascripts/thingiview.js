@@ -76,6 +76,10 @@ Thingiview.prototype.initScene = function() {
   	this.camera.target = new THREE.Vector3(0, 0, 0);
   	this.camera.updateMatrix();
 
+    this.controls = new THREE.OrbitControls( this.camera );
+    this.controls.minDistance = 10;
+    this.controls.maxDistance = 50;
+
   	this.scene  = new THREE.Scene();
 
     this.ambientLight = new THREE.AmbientLight(0x202020);
@@ -126,10 +130,8 @@ Thingiview.prototype.initScene = function() {
     if (this.showPlane) {
       this.loadPlaneGeometry();
     }
-
     this.setCameraView(this.cameraView);
     this.setObjectMaterial(this.objectMaterial);
-
     testCanvas = document.createElement('canvas');
     try {
       if (testCanvas.getContext('experimental-webgl')) {
@@ -161,222 +163,6 @@ Thingiview.prototype.initScene = function() {
     // this.container.addEventListener('resize', onContainerResize(), false);
 
     // this.renderer.domElement.addEventListener('mousemove',      onRendererMouseMove,     false);
-  	window.addEventListener('mousemove', (function(self) {
-                                  return function(event) {
-                                    self.onRendererMouseMove(event);
-                                  }
-                                 })(this),     false);
-    this.renderer.domElement.addEventListener('mouseover', (function(self) {
-                                  return function(event) {
-                                    self.onRendererMouseOver(event);
-                                  }
-                                 })(this),     false);
-    this.renderer.domElement.addEventListener('mouseout', (function(self) {
-                                  return function(event) {
-                                    self.onRendererMouseOut(event);
-                                  }
-                                 })(this),      false);
-  	this.renderer.domElement.addEventListener('mousedown', (function(self) {
-                                  return function(event) {
-                                    self.onRendererMouseDown(event);
-                                  }
-                                 })(this),     false);
-    // this.renderer.domElement.addEventListener('mouseup',        this.onRendererMouseUp,       false);
-    window.addEventListener('mouseup', (function(self) {
-                                  return function(event) {
-                                    self.onRendererMouseUp(event);
-                                  }
-                                 })(this),       false);
-
-  	this.renderer.domElement.addEventListener('touchstart', (function(self) {
-                                  return function(event) {
-                                    self.onRendererTouchStart(event);
-                                  }
-                                 })(this),    false);
-  	this.renderer.domElement.addEventListener('touchend', (function(self) {
-                                  return function(event) {
-                                    self.onRendererTouchEnd(event);
-                                  }
-                                 })(this),      false);
-  	this.renderer.domElement.addEventListener('touchmove', (function(self) {
-                                  return function(event) {
-                                    self.onRendererTouchMove(event);
-                                  }
-                                 })(this),     false);
-
-    this.renderer.domElement.addEventListener('DOMMouseScroll', (function(self) {
-                                  return function(event) {
-                                    self.onRendererScroll(event);
-                                  }
-                                 })(this),        false);
-  	this.renderer.domElement.addEventListener('mousewheel', (function(self) {
-                                  return function(event) {
-                                    self.onRendererScroll(event);
-                                  }
-                                 })(this),        false);
-  	this.renderer.domElement.addEventListener('gesturechange', (function(self) {
-                                  return function(event) {
-                                    self.onRendererGestureChange(event);
-                                  }
-                                 })(this), false);
-  }
-
-  // FIXME
-  // onContainerResize = function(event) {
-  //   width  = parseFloat(document.defaultView.getComputedStyle(this.container,null).getPropertyValue('width'));
-  //   height = parseFloat(document.defaultView.getComputedStyle(this.container,null).getPropertyValue('height'));
-  //
-  //   // log("resized width: " + width + ", height: " + height);
-  //
-  //   if (this.renderer) {
-  //     this.renderer.setSize(width, height);
-  //     camera.projectionMatrix = THREE.Matrix4.makePerspective(70, width / height, 1, 10000);
-  //     this.sceneLoop();
-  //   }
-  // };
-
-Thingiview.prototype.onRendererScroll = function(event) {
-    event.preventDefault();
-
-    var rolled = 0;
-
-    if (event.wheelDelta === undefined) {
-      // Firefox
-      // The measurement units of the detail and wheelDelta properties are different.
-      rolled = -40 * event.detail;
-    } else {
-      rolled = event.wheelDelta;
-    }
-
-    if (rolled > 0) {
-      // up
-      this.scope.setCameraZoom(+10);
-    } else {
-      // down
-      this.scope.setCameraZoom(-10);
-    }
-  }
-
-Thingiview.prototype.onRendererGestureChange = function(event) {
-    event.preventDefault();
-
-    if (event.scale > 1) {
-      this.scope.setCameraZoom(+5);
-    } else {
-      this.scope.setCameraZoom(-5);
-    }
-  }
-
-Thingiview.prototype.onRendererMouseOver = function(event) {
-    this.mouseOver = true;
-    // targetRotation = object.rotation.z;
-    if (this.timer == null) {
-      // log('starting loop');
-      this.timer = setInterval((function(self) {
-                                  return function() {
-                                    self.sceneLoop();
-                                  }
-                                 })(this), 1000/60);
-    }
-  }
-
-Thingiview.prototype.onRendererMouseDown = function(event) {
-    // log("down");
-
-    event.preventDefault();
-  	this.mouseDown = true;
-
-    if(this.scope.getRotation()){
-      this.wasRotating = true;
-      this.setRotation(false);
-    } else {
-      this.wasRotating = false;
-    }
-
-  	mouseXOnMouseDown = event.clientX - this.windowHalfX;
-  	mouseYOnMouseDown = event.clientY - this.windowHalfY;
-
-  	this.targetXRotationOnMouseDown = this.targetXRotation;
-  	this.targetYRotationOnMouseDown = this.targetYRotation;
-  }
-
-Thingiview.prototype.onRendererMouseMove = function(event) {
-    // log("move");
-
-    if (this.mouseDown) {
-  	  mouseX = event.clientX - this.windowHalfX;
-      // this.targetXRotation = this.targetXRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
-  	  xrot = this.targetXRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
-
-  	  mouseY = event.clientY - this.windowHalfY;
-      // this.targetYRotation = this.targetYRotationOnMouseDown + (mouseY - mouseYOnMouseDown) * 0.02;
-  	  yrot = this.targetYRotationOnMouseDown + (mouseY - mouseYOnMouseDown) * 0.02;
-
-  	  this.targetXRotation = xrot;
-  	  this.targetYRotation = yrot;
-	  }
-  }
-
-Thingiview.prototype.onRendererMouseUp = function(event) {
-    // log("up");
-    if (this.mouseDown) {
-      this.mouseDown = false;
-      if (!this.mouseOver) {
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-      if (this.wasRotating) {
-        this.setRotation(true);
-      }
-    }
-  }
-
-Thingiview.prototype.onRendererMouseOut = function(event) {
-    if (!this.mouseDown) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-    this.mouseOver = false;
-  }
-
-Thingiview.prototype.onRendererTouchStart = function(event) {
-    this.targetXRotation = this.object.rotation.z;
-    this.targetYRotation = this.object.rotation.x;
-
-    this.timer = setInterval((function(self) {
-                                return function() {
-                                  self.sceneLoop();
-                                }
-                               })(this), 1000/60);
-
-  	if (event.touches.length == 1) {
-  		event.preventDefault();
-
-  		mouseXOnMouseDown = event.touches[0].pageX - this.windowHalfX;
-  		this.targetXRotationOnMouseDown = this.targetXRotation;
-
-  		mouseYOnMouseDown = event.touches[0].pageY - this.windowHalfY;
-  		this.targetYRotationOnMouseDown = this.targetYRotation;
-  	}
-  }
-
-Thingiview.prototype.onRendererTouchEnd = function(event) {
-    clearInterval(this.timer);
-    this.timer = null;
-    // this.targetXRotation = this.object.rotation.z;
-    // this.targetYRotation = this.object.rotation.x;
-  }
-
-Thingiview.prototype.onRendererTouchMove = function(event) {
-  	if (event.touches.length == 1) {
-  		event.preventDefault();
-
-  		mouseX = event.touches[0].pageX - this.windowHalfX;
-  		this.targetXRotation = this.targetXRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
-
-  		mouseY = event.touches[0].pageY - this.windowHalfY;
-  		this.targetYRotation = this.targetYRotationOnMouseDown + (mouseY - mouseYOnMouseDown) * 0.05;
-  	}
   }
 
 Thingiview.prototype.sceneLoop = function() {
@@ -399,27 +185,35 @@ Thingiview.prototype.sceneLoop = function() {
         this.plane.rotation.z = this.object.rotation.z = (this.targetXRotation - this.object.rotation.z) * 0.2;
         this.plane.rotation.x = this.object.rotation.x = (this.targetYRotation - this.object.rotation.x) * 0.2;
       } else {
+
         this.object.rotation.z = (this.targetXRotation - this.object.rotation.z) * 0.2;
         this.object.rotation.x = (this.targetYRotation - this.object.rotation.x) * 0.2;
       }
 
+
       // log(this.object.rotation.x);
 
-      this.camera.lookAt(this.camera.target);
-      this.camera.updateMatrix();
+
+      //this.camera.updateMatrix();
       this.object.updateMatrix();
 
       if (this.showPlane) {
         this.plane.updateMatrix();
       }
 
+      this.controls.update();
+
     	this.renderer.render(this.scene, this.camera);
-      // stats.update();
+      if (!this.getRotation()) {
+        var _this = this;
+        setTimeout(function() {
+          _this.sceneLoop();
+        }, 20);
+      }
     }
   }
 
 Thingiview.prototype.rotateLoop = function() {
-    // targetRotation += 0.01;
     this.targetXRotation += 0.05;
     this.sceneLoop();
   }
@@ -465,6 +259,7 @@ Thingiview.prototype.setRotation = function(rotate) {
                                        })(this), 1000/60);
     } else {
       this.rotateTimer = null;
+      this.sceneLoop();
     }
 
     this.scope.onSetRotation();
@@ -854,10 +649,13 @@ var STLGeometry = function(stlArray) {
   }
 
   // log("computing centroids...");
-  this.computeCentroids();
+  this.computeBoundingBox();
+
+  this.computeVertexNormals();
+  this.computeFaceNormals()
   // log("computing normals...");
   // this.computeNormals();
-	this.computeFaceNormals();
+	//this.computeFaceNormals();
   // log("finished building geometry");
 
   scope.min_x = 0;
@@ -894,6 +692,7 @@ var STLGeometry = function(stlArray) {
 
   scope.center_x = 0;
   scope.center_y = 0;
+
 }
 
 STLGeometry.prototype = new THREE.Geometry();

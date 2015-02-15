@@ -5,7 +5,7 @@
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  
+
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
   <style>
    .chromeFrameInstallDefaultStyle {
@@ -14,8 +14,9 @@
      border: 5px solid blue;
    }
   </style>
-  
-  <script src="../javascripts/three.min.js"></script>
+
+  <script src="http://threejs.org/build/three.min.js"></script>
+  <script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
   <script src="../javascripts/thingiview.js"></script>
 
   <script>
@@ -30,7 +31,8 @@
       thingiview = new Thingiview("viewer",100,10);
       thingiview.setObjectColor('#C0D8F0');
       thingiview.initScene();
-      // thingiview.setShowPlane(true);
+      thingiview.setShowPlane(true);
+      thingiview.setRotation(true);
       thingiview.loadSTLString(document.getElementById('stlstring').value);
     }
   </script>
@@ -364,21 +366,21 @@ endsolid OpenSCAD_Model
 </div>
 
 <p>
-  <input onclick="thingiview.setCameraView('top');" type="button" value="Top" /> 
-  <input onclick="thingiview.setCameraView('side');" type="button" value="Side" /> 
-  <input onclick="thingiview.setCameraView('bottom');" type="button" value="Bottom" /> 
-  <input onclick="thingiview.setCameraView('diagonal');" type="button" value="Diagonal" /> 
- 
-  <input onclick="thingiview.setCameraZoom(5);" type="button" value="Zoom +" /> 
-  <input onclick="thingiview.setCameraZoom(-5);" type="button" value="Zoom -" /> 
- 
+  <input onclick="thingiview.setCameraView('top');" type="button" value="Top" />
+  <input onclick="thingiview.setCameraView('side');" type="button" value="Side" />
+  <input onclick="thingiview.setCameraView('bottom');" type="button" value="Bottom" />
+  <input onclick="thingiview.setCameraView('diagonal');" type="button" value="Diagonal" />
+
+  <input onclick="thingiview.setCameraZoom(5);" type="button" value="Zoom +" />
+  <input onclick="thingiview.setCameraZoom(-5);" type="button" value="Zoom -" />
+
   Rotation: <input onclick="thingiview.setRotation(true);" type="button" value="on" /> | <input onclick="thingiview.setRotation(false);" type="button" value="off" />
 </p>
 
 <div id="viewer" style="width:50%;height:400px"></div>
 
 <p>
-  <input onclick="thingiview.setObjectMaterial('wireframe');" type="button" value="Wireframe" /> 
+  <input onclick="thingiview.setObjectMaterial('wireframe');" type="button" value="Wireframe" />
   <input onclick="thingiview.setObjectMaterial('solid');" type="button" value="Solid" />
 </p>
 
